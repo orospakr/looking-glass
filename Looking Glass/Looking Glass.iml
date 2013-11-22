@@ -25,37 +25,37 @@
     <output url="file://$MODULE_DIR$/build/classes/debug" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/main/rs" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/aidl" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug/jni" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/jni" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/res" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/assets" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug/assets" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug/rs" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug/res" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug/aidl" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug/resources" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/res" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/res/rs/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/source/rs/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/source/r/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/assets" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/source/aidl/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/source/buildConfig/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/resources" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/source/rs/debug" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/source/aidl/debug" isTestSource="false" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/res/rs/debug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/source/r/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/source/aidl/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/source/rs/debug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/source/buildConfig/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/res/rs/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/source/r/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/source/aidl/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/source/rs/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/source/buildConfig/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/res/rs/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/aidl" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/assets" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/jni" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/rs" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/res" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/aidl" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/assets" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/jni" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/rs" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/res" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/assets" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/jni" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/res" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/instrumentTest/resources" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build/apk" />
       <excludeFolder url="file://$MODULE_DIR$/build/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/bundles" />
@@ -69,6 +69,17 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="jetty-servlet-9.0.2.v20130417" level="project" />
+    <orderEntry type="library" exported="" name="jetty-server-9.0.2.v20130417" level="project" />
+    <orderEntry type="library" exported="" name="jetty-util-9.0.2.v20130417" level="project" />
+    <orderEntry type="library" exported="" name="jetty-security-9.0.2.v20130417" level="project" />
+    <orderEntry type="library" exported="" name="jetty-webapp-9.0.2.v20130417" level="project" />
+    <orderEntry type="library" exported="" name="jetty-xml-9.0.2.v20130417" level="project" />
+    <orderEntry type="library" exported="" name="jetty-io-9.0.2.v20130417" level="project" />
+    <orderEntry type="library" exported="" name="slf4j-api-1.7.2" level="project" />
+    <orderEntry type="library" exported="" name="jetty-http-9.0.2.v20130417" level="project" />
+    <orderEntry type="library" exported="" name="javax.servlet-3.0.0.v201112011016" level="project" />
+    <orderEntry type="library" exported="" name="spark-core-1.1.1" level="project" />
   </component>
 </module>
 
