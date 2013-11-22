@@ -12,6 +12,8 @@ I also intend to add some useful web-based tools for some common
 content providers in order to make a conveniently human usable web UI
 for some of Android's data services.
 
+(Not to be confused a Internet routing "Looking Glass")
+
 ### License
 
 Copyright (C) 2013 Andrew Clunis <andrew@orospakr.ca>
