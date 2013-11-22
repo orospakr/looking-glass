@@ -1,9 +1,11 @@
 ## Looking Glass
 
 Android's Content Provider interface embodies so much of the same
-principles as RESTful HTTP.  Expose your apps' Content Providers and
-make them into easily callable REST APIs.  All this is done on the
-phone; no external service is necessary.
+principles as RESTful HTTP.
+
+This app exposes your apps' Content Providers as easily callable REST
+APIs.  All this is done on the phone; no external service is
+necessary.
 
 Try using some of your phone's providers via your favourite REST
 client library, like ActiveResource.
@@ -57,6 +59,8 @@ cache):
 
 ## Tasks
 
+* Add all the permissions for accessing the built-in content
+  providers;
 * Token-based pairing of HTTP clients via interactive prompts on the
   device;
 * See about any hacks applicable to rooted devices to enable access to
