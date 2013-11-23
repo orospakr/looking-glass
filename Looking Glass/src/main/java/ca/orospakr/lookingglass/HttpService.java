@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PathPermission;
+import android.content.pm.PermissionInfo;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.net.Uri;
@@ -16,6 +18,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.Callable;
 
 import spark.Request;
@@ -154,6 +157,7 @@ public class HttpService extends Service {
             }
         });
 
+        // get a list of all installed providers and their details (ProviderInfos)
         get(new Route("/cp") {
 
             @Override
@@ -183,6 +187,64 @@ public class HttpService extends Service {
                     }
                 });
 
+            }
+        });
+
+        // poop out a list of all possible Provider permissions as required, for convenient pasta into AndroidManifest.xml
+        get(new Route("/util/needed_permissions") {
+            @Override
+            public Object handle(Request request, Response response) {
+                logRequest(request);
+
+                return executeWithErrorHandling(response, new Callable<Object>() {
+                    @Override
+                    public Object call() throws Exception {
+
+                        HashSet<String> foundPermissions = new HashSet<String>();
+
+
+                        StringBuilder sb = new StringBuilder();
+                        PackageManager pm = HttpService.this.getApplicationContext().getPackageManager();
+
+                        for(PackageInfo pack : pm.getInstalledPackages(PackageManager.GET_PROVIDERS)) {
+                            if(pack.providers != null) {
+                                for (ProviderInfo provider : pack.providers) {
+
+                                    if(provider.pathPermissions != null) {
+                                        for( PathPermission pi : provider.pathPermissions) {
+                                            foundPermissions.add(pi.getReadPermission());
+                                            foundPermissions.add(pi.getWritePermission());
+
+
+                                        }
+                                    }
+
+                                    if(provider.readPermission != null) {
+
+                                        foundPermissions.add(provider.readPermission);
+                                    }
+
+                                    if(provider.writePermission != null) {
+                                        foundPermissions.add(provider.writePermission);
+                                    }
+                                }
+
+                            }
+                        }
+
+                        for(String perm : foundPermissions) {
+                            if(perm == null)
+                                continue;
+                            sb.append("<uses-permission android:name=\"");
+                            sb.append(perm);
+
+                            sb.append("\" />\n");
+                        }
+
+
+                        return sb.toString();
+                    }
+                });
             }
         });
 
