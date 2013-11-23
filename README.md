@@ -14,6 +14,9 @@ I also intend to add some useful web-based tools for some common
 content providers in order to make a conveniently human usable web UI
 for some of Android's data services.
 
+Sadly, requires Android 4.4 ("Kit Kat") for now because some of my
+dependencies (Jetty) require Java 7 stuff, which only dropped in 4.4.
+
 (Not to be confused with an Internet routing "Looking Glass".)
 
 ### License
@@ -32,8 +35,8 @@ permissions and limitations under the License.
 
 ### Building
 
-Warning!  Before you continue, this app is fairly dangerous to leave
-on your phone until I implement the security features.
+Warning!  Before you continue, know that this app is fairly dangerous
+to leave on your phone until I implement the security features.
 
 Build the project:
 
@@ -61,6 +64,7 @@ cache):
 
 * Add all the permissions for accessing the built-in content
   providers;
+* Insertion/updating of records;
 * Token-based pairing of HTTP clients via interactive prompts on the
   device;
 * See about any hacks applicable to rooted devices to enable access to

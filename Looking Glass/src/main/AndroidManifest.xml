@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="19"
         android:targetSdkVersion="19" />
 
     <application
@@ -27,6 +27,14 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Content Provider permissions.  Because they can only be asked for here, I expect a lot of
+         pull requests here. ;) -->
+
+    <!-- System content providers -->
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
+
+    <!-- Third-party content providers -->
+
+    <uses-permission android:name="evernote.permission.READ_DATA" />
 
 </manifest>

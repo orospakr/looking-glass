@@ -2,6 +2,9 @@ package ca.orospakr.lookingglass;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
@@ -12,6 +15,8 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 import spark.Request;
 import spark.Response;
@@ -26,6 +31,20 @@ import static spark.Spark.get;
 public class HttpService extends Service {
     private static final String LOG_TAG = "LookingGlass/HttpService";
 
+    public static Object executeWithErrorHandling(Response response, Callable<Object> cb) {
+        try {
+            return cb.call();
+        } catch (SecurityException e) {
+            response.status(401);
+            return "Looking Glass itself lacks permission to glimpse at that content provider: " + e.getMessage();
+        } catch (Exception e) {
+            response.status(500);
+            e.printStackTrace();
+            // TODO: with my upcoming security stuff, logging exception in response might be OK
+            return "You've found a bug.  Check lolcat for details.";
+        }
+    }
+
     private static abstract class CursorTransformerRoute extends ResponseTransformerRoute {
 
         // instead of using acceptType we're going to do a respond_to like thing here
@@ -38,10 +57,17 @@ public class HttpService extends Service {
         @Override
         public String render(Object o) {
 
+            // just pass through a string if we got one (the path handler returns an informative
+            // error string if it gets an error, mainly)
+            if (o instanceof String) {
+                return (String)o;
+            }
+
             Cursor cursor = (Cursor)o;
 
             int columnCount = cursor.getColumnCount();
 
+            // rather than buffering all this crap, can/should I put Spark into chunked and stream it?
             StringWriter sw = new StringWriter();
             JsonWriter jw = new JsonWriter(sw);
 
@@ -97,11 +123,12 @@ public class HttpService extends Service {
 
                 jw.flush();
             } catch (Exception e) {
-                // TODO: throw internal server error?
+                // TODO: throw internal server error from here?
                 // catching all exceptions here because Jetty/Spark's general exception handling
                 // is subtly broken on Android (missing Java 7 classes, yeeeeg)
                 Log.e(LOG_TAG, "ERROR " + e.toString());
                 e.printStackTrace();
+                return null;
             }
 
            return sw.getBuffer().toString();
@@ -127,6 +154,60 @@ public class HttpService extends Service {
             }
         });
 
+        get(new Route("/cp") {
+
+            @Override
+            public Object handle(Request request, Response response) {
+                logRequest(request);
+
+                return executeWithErrorHandling(response, new Callable<Object>() {
+                    @Override
+                    public Object call() throws Exception {
+                        PackageManager pm = HttpService.this.getApplicationContext().getPackageManager();
+
+                        ArrayList<ProviderInfo> installedProviders = new ArrayList<ProviderInfo>();
+
+                        for(PackageInfo pack : pm.getInstalledPackages(PackageManager.GET_PROVIDERS)) {
+                            // installedProviders.addAll(pack.providers); lol, why do I have to do this instead:
+                            if(pack.providers == null) {
+                                continue;
+                            }
+                            for (ProviderInfo pi : pack.providers) {
+                                installedProviders.add(pi);
+                            }
+                        }
+
+                        Gson gson = new Gson();
+
+                        return gson.toJson(installedProviders);
+                    }
+                });
+
+            }
+        });
+
+        // get details (ProviderInfo) of a given authority.
+        get(new Route("/cp/:authority") {
+
+            @Override
+            public Object handle(final Request request, final Response response) {
+                logRequest(request);
+
+                return executeWithErrorHandling(response, new Callable<Object>() {
+                    @Override
+                    public Object call() throws Exception {
+                        PackageManager pm = HttpService.this.getApplicationContext().getPackageManager();
+                        ProviderInfo pi = pm.resolveContentProvider(request.params(":authority"), 0);
+
+                        Gson gson = new Gson();
+
+                        response.type("application/json");
+                        return gson.toJson(pi);
+                    }
+                });
+            }
+        });
+
         // TODO: endpoint for listing *all* installed content providers
 
         // TODO: endpoint(s) for single resources? /bookmarks/2?  could be handy for fast fetch of
@@ -137,41 +218,41 @@ public class HttpService extends Service {
         get(new CursorTransformerRoute("/cp/:authority/:path") {
 
             @Override
-            public Object handle(Request request, Response response) {
+            public Object handle(final Request request, final Response response) {
                 logRequest(request);
 
-                // time to whip myself up a contentresolver
+                return executeWithErrorHandling(response, new Callable<Object>() {
+                    @Override
+                    public Object call() throws Exception {
+                        // time to whip myself up a contentresolver
 
-                // TODO: listen on v6 if available
+                        // TODO: listen on v6 if available
 
-                // TODO: thread safety concerns?  what's spark's concurrency model?
+                        // TODO: thread safety concerns?  what's spark's concurrency model?
 
-                // TODO: build Uri properly
+                        // TODO: build Uri properly
 
-                // my god all of this is extremely dangerous
+                        // my god all of this is extremely dangerous
 
-                // TODO: any way on a rooted phone to force through perms to query *all* content providers?  this would be badass
+                        // TODO: any way on a rooted phone to force through perms to query *all* content providers?  this would be badass
 
-                // TODO: any way to discover all paths answered by a content provider?
-                try {
-                    Cursor fetched = HttpService.this.getContentResolver().query(Uri.parse("content://" + request.params(":authority") + "/" + request.params(":path")), null, null, null, null);
-                    // return "Request for authority " + request.params(":authority") + " and path " + request.params(":path") + ", which got " + fetched.getCount() + " rows";
-                    response.type("application/json");
-                    return fetched;
-                } catch(SecurityException e) {
-                    response.status(500);
-                    return "Looking Glass itself lacks permission to glimpse at that content provider: " + e.getMessage();
-                }
+                        // TODO: any way to discover all paths answered by a content provider?
+
+                            Cursor fetched = HttpService.this.getContentResolver().query(Uri.parse("content://" + request.params(":authority") + "/" + request.params(":path")), null, null, null, null);
+                            // return "Request for authority " + request.params(":authority") + " and path " + request.params(":path") + ", which got " + fetched.getCount() + " rows";
+                            response.type("application/json");
+                            return fetched;
+
+                    }
+                });
+
+
             }
         });
 
     }
 
     public IBinder onBind(Intent intent) {
-
-        // start up a Spark server
-
-
         return null;
     }
 }
