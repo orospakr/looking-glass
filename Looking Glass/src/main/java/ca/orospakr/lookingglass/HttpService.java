@@ -196,6 +196,8 @@ public class HttpService extends Service {
             public Object handle(Request request, Response response) {
                 logRequest(request);
 
+                response.type("text/plain");
+
                 return executeWithErrorHandling(response, new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
@@ -261,6 +263,10 @@ public class HttpService extends Service {
                         PackageManager pm = HttpService.this.getApplicationContext().getPackageManager();
                         ProviderInfo pi = pm.resolveContentProvider(request.params(":authority"), 0);
 
+                        if(pi == null) {
+                            response.status(404);
+                            return "That content provider does not exist.";
+                        }
                         Gson gson = new Gson();
 
                         response.type("application/json");
