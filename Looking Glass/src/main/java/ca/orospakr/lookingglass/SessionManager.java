@@ -5,6 +5,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -46,7 +47,7 @@ public class SessionManager {
         byte[] bytes = new byte[25];
         new Random().nextBytes(bytes);
         try {
-            return new String(Base64.encode(bytes, Base64.URL_SAFE), "UTF-8");
+            return new String(Base64.encode(bytes, Base64.URL_SAFE), "UTF-8").trim();
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -61,13 +62,20 @@ public class SessionManager {
 
         Gson gson = new Gson();
 
+        FileWriter fw;
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(sessionPath(authToken)));
+            fw = new FileWriter(sessionPath(authToken));
+            writer = new BufferedWriter(fw);
 
             gson.toJson(session, writer);
 
             writer.close();
+            fw.close();
+
+            if(!sessionPath(authToken).exists()) {
+                throw new RuntimeException("Apparently failed at creating session file.");
+            }
         } catch (IOException e) {
             throw new RuntimeException("Problem writing a session to private storage", e);
         }
@@ -92,12 +100,17 @@ public class SessionManager {
         if(sessionPath.exists()) {
             try {
                 Gson gson = new Gson();
-                // TODO: what happens if the Json doesn't fit?
-                return gson.fromJson(new BufferedReader(new FileReader(sessionPath)), Session.class);
+                try {
+                    return gson.fromJson(new BufferedReader(new FileReader(sessionPath)), Session.class);
+                } catch (JsonSyntaxException e) {
+                    Log.e(LOG_TAG, "Bogus state file at " + authToken);
+                    return null;
+                }
             } catch (FileNotFoundException e) {
                 throw new RuntimeException("Session file disappeared underneath my nose?", e);
             }
         } else {
+            Log.d(LOG_TAG, "Session " + authToken + " does not exist.");
             return null;
         }
     }
