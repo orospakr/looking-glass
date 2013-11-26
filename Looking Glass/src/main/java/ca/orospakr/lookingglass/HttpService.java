@@ -15,11 +15,17 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
+import org.eclipse.jetty.server.SessionIdManager;
+import org.eclipse.jetty.util.component.LifeCycle;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import spark.Request;
 import spark.Response;
@@ -33,6 +39,7 @@ import static spark.Spark.get;
  */
 public class HttpService extends Service {
     private static final String LOG_TAG = "LookingGlass/HttpService";
+    private SessionManager mSessionManager;
 
     public static Object executeWithErrorHandling(Response response, Callable<Object> cb) {
         try {
@@ -46,6 +53,12 @@ public class HttpService extends Service {
             // TODO: with my upcoming security stuff, logging exception in response might be OK
             return "You've found a bug.  Check lolcat for details.";
         }
+    }
+
+    protected void authorize(String authority, Request request, Response response) {
+        SessionManager.Session session = mSessionManager.get(request, response);
+
+        mSessionManager.authorize(session, authority);
     }
 
     private static abstract class CursorTransformerRoute extends ResponseTransformerRoute {
@@ -147,6 +160,8 @@ public class HttpService extends Service {
         super.onCreate();
 
         Log.i(LOG_TAG, "STATING UP HTTP SERVER");
+
+        mSessionManager = new SessionManager(this);
 
         get(new Route("/") {
 
@@ -257,11 +272,13 @@ public class HttpService extends Service {
             public Object handle(final Request request, final Response response) {
                 logRequest(request);
 
+                final String authority = request.params(":authority");
+
                 return executeWithErrorHandling(response, new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
                         PackageManager pm = HttpService.this.getApplicationContext().getPackageManager();
-                        ProviderInfo pi = pm.resolveContentProvider(request.params(":authority"), 0);
+                        ProviderInfo pi = pm.resolveContentProvider(authority, 0);
 
                         if(pi == null) {
                             response.status(404);
@@ -289,9 +306,15 @@ public class HttpService extends Service {
             public Object handle(final Request request, final Response response) {
                 logRequest(request);
 
+                final String authority = request.params(":authority");
+
+
+
                 return executeWithErrorHandling(response, new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
+
+                        authorize(authority, request, response);
                         // time to whip myself up a contentresolver
 
                         // TODO: listen on v6 if available
@@ -306,7 +329,7 @@ public class HttpService extends Service {
 
                         // TODO: any way to discover all paths answered by a content provider?
 
-                            Cursor fetched = HttpService.this.getContentResolver().query(Uri.parse("content://" + request.params(":authority") + "/" + request.params(":path")), null, null, null, null);
+                            Cursor fetched = HttpService.this.getContentResolver().query(Uri.parse("content://" + authority + "/" + request.params(":path")), null, null, null, null);
                             // return "Request for authority " + request.params(":authority") + " and path " + request.params(":path") + ", which got " + fetched.getCount() + " rows";
                             response.type("application/json");
                             return fetched;
@@ -317,7 +340,6 @@ public class HttpService extends Service {
 
             }
         });
-
     }
 
     public IBinder onBind(Intent intent) {
