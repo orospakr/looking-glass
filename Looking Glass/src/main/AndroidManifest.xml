@@ -22,13 +22,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".HttpService" />
+
+        <service android:name="ca.orospakr.lookingglass.HttpService" />
+
+        <activity
+            android:name="ca.orospakr.lookingglass.AuthorizationActivity"
+            android:label="@string/title_activity_authorization" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Content Provider permissions.  Because they can only be asked for here, I expect a lot of
-         pull requests here. ;) -->
+    <!--
+         Content Provider permissions.  Because they can only be asked for here, I expect a lot of
+         pull requests here. ;)
+    -->
 
     <uses-permission android:name="com.qo.android.permission.READ_FILE_CONTENT" />
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
@@ -79,7 +87,6 @@
     <uses-permission android:name="com.todoroo.astrid.READ" />
     <uses-permission android:name="org.mozilla.firefox.permissions.HEALTH_PROVIDER" />
     <uses-permission android:name="org.mozilla.firefox.permissions.PASSWORD_PROVIDER" />
-
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.ACCESS_ALL_DOWNLOADS" />
     <uses-permission android:name="com.google.android.gm.permission.READ_CONTENT_PROVIDER" />
