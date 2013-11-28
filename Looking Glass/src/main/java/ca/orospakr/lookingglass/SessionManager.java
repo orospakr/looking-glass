@@ -1,6 +1,10 @@
 package ca.orospakr.lookingglass;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
 
@@ -16,6 +20,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -29,6 +34,12 @@ import spark.Response;
  */
 public class SessionManager {
 
+    public static class UnauthorizedException extends Exception {
+        public UnauthorizedException(String authority) {
+            super("This session is not permitted to use " + authority);
+        }
+    }
+
     private static final String LOG_TAG = "LookingGlass/SessionManager";
     private static String COOKIE_KEY = "lg_cookie";
 
@@ -37,6 +48,12 @@ public class SessionManager {
 
     public static class Session {
         // per-authority permissions and such go here
+
+        /** Content providers the device's owner has permitted this session to access. */
+        ArrayList<String> permittedAuthorities = new ArrayList<String>();
+
+        /** Content providers the device's owner has explicitly disallowed this session from accessing. */
+        ArrayList<String> disallowedAuthorites = new ArrayList<String>();
     }
 
     public SessionManager(Context context) {
@@ -57,6 +74,7 @@ public class SessionManager {
         String authToken = createAuthToken();
 
         Session session = new Session();
+
 
         // save session on disk
 
@@ -138,7 +156,17 @@ public class SessionManager {
     /** Throws exception if that Session is unauthorized.
      *
      * May block as it queries the user! */
-    public void authorize(Session session, String authority) {
+    public void authorize(Session session, String authority) throws UnauthorizedException {
         // do nothing, thus authorizing everything for now
+        if(session.disallowedAuthorites.contains(authority)) {
+            throw new UnauthorizedException(authority);
+        }
+        if(!session.permittedAuthorities.contains(authority)) {
+            // open the authorization activity, then wait for our AuthAnswerService to be told when.
+            AuthAnswerService.putUpNotification(mContext, authority);
+
+            // now block
+
+        }
     }
 }

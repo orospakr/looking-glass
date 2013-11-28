@@ -25,10 +25,8 @@
 
         <service android:name="ca.orospakr.lookingglass.HttpService" />
 
-        <activity
-            android:name="ca.orospakr.lookingglass.AuthorizationActivity"
-            android:label="@string/title_activity_authorization" >
-        </activity>
+        <service android:name="ca.orospakr.lookingglass.AuthAnswerService" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

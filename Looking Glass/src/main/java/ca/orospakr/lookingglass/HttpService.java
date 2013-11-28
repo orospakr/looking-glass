@@ -47,6 +47,9 @@ public class HttpService extends Service {
         } catch (SecurityException e) {
             response.status(401);
             return "Looking Glass itself lacks permission to glimpse at that content provider: " + e.getMessage();
+        } catch (SessionManager.UnauthorizedException e) {
+            response.status(403);
+            return "Phone's owner denied the request.";
         } catch (Exception e) {
             response.status(500);
             e.printStackTrace();
@@ -55,7 +58,7 @@ public class HttpService extends Service {
         }
     }
 
-    protected void authorize(String authority, Request request, Response response) {
+    protected void authorize(String authority, Request request, Response response) throws SessionManager.UnauthorizedException{
         SessionManager.Session session = mSessionManager.get(request, response);
 
         mSessionManager.authorize(session, authority);
