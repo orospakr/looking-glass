@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -39,7 +40,9 @@ import static spark.Spark.get;
  */
 public class HttpService extends Service {
     private static final String LOG_TAG = "LookingGlass/HttpService";
-    private SessionManager mSessionManager;
+
+    @Inject
+    public SessionManager mSessionManager;
 
     public static Object executeWithErrorHandling(Response response, Callable<Object> cb) {
         try {
@@ -162,9 +165,11 @@ public class HttpService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        Log.i(LOG_TAG, "STATING UP HTTP SERVER");
+        ((LookingGlassApp) getApplication()).inject(this);
 
-        mSessionManager = new SessionManager(this);
+        Log.i(LOG_TAG, "STATING UP HTTP SERVER, session manager is " + mSessionManager);
+
+        // mSessionManager = new SessionManager(this);
 
         get(new Route("/") {
 

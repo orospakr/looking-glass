@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.Module;
 import spark.Request;
 import spark.Response;
 
@@ -32,8 +36,9 @@ import spark.Response;
  *
  * A pretty naiive implementation; not particularly atomic, all synchronous I/O.  We can get away with this because we're not clustering this at all.
  */
-public class SessionManager {
 
+@Singleton
+public class SessionManager {
     public static class UnauthorizedException extends Exception {
         public UnauthorizedException(String authority) {
             super("This session is not permitted to use " + authority);
@@ -44,7 +49,9 @@ public class SessionManager {
     private static String COOKIE_KEY = "lg_cookie";
 
     private static String SESSIONS_PATH = "session";
-    private final Context mContext;
+
+    @Inject
+    public Context mContext;
 
     public static class Session {
         // per-authority permissions and such go here
@@ -54,10 +61,6 @@ public class SessionManager {
 
         /** Content providers the device's owner has explicitly disallowed this session from accessing. */
         ArrayList<String> disallowedAuthorites = new ArrayList<String>();
-    }
-
-    public SessionManager(Context context) {
-        mContext = context;
     }
 
     protected String createAuthToken() {
@@ -165,7 +168,7 @@ public class SessionManager {
             // open the authorization activity, then wait for our AuthAnswerService to be told when.
             AuthAnswerService.putUpNotification(mContext, authority);
 
-            // now block
+            // now block.  however, while we do want to consume the answer here, the thing that sets the answer in the session needs to be somewhere else: I want to the request to timeout, but I want the setting to get changed even if the user clicks the notification hours after the fact.
 
         }
     }

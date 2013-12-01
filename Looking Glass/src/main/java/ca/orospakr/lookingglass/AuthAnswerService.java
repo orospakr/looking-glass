@@ -10,6 +10,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import javax.inject.Inject;
+
 /**
  * Responsible for getting the answer from the notifications kicked up by the SessionManager over in SessionManager.
  */
@@ -20,6 +28,12 @@ public class AuthAnswerService extends Service {
 
     private static final String LOG_TAG = "LookingGlass/AuthAnswerService";
 
+    // SINGLETON, expected to live the lifetime of the :sync process.  somewhere better to put it than static, which is kind of sucky?  make it a singleton in the dagger graph?
+    public static ConcurrentHashMap<String, Future<Boolean>> blockedRequests = new ConcurrentHashMap<String, Future<Boolean>>();
+
+    @Inject
+    public SessionManager sessionManager;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -27,7 +41,11 @@ public class AuthAnswerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        ((LookingGlassApp) getApplication()).inject(this);
         int r = super.onStartCommand(intent, flags, startId);
+
+        Log.d(LOG_TAG, "GOT MY SESSION MANAGER: " + sessionManager);
 
         // here I'll get my answer from the notification.  pull the value back out!
 
@@ -38,6 +56,12 @@ public class AuthAnswerService extends Service {
         Log.d(LOG_TAG, extras.toString());
 
         Log.d(LOG_TAG, "GOT REQUEST TO " + answer + ": " + authority);
+
+        // TODO write the setting via SessionManager!
+
+        // then resolve any blocked requests
+        blockedRequests.get(authority);
+
         return r;
     }
 
@@ -77,5 +101,39 @@ public class AuthAnswerService extends Service {
         notificationBuilder.addAction(R.drawable.ic_cab_done_holo_dark, "Allow", allowAction);
         NotificationManager notificationThingy = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationThingy.notify(56356, notificationBuilder.build());
+
+        Object answerBlockLock = new Object();
+
+
+
+        // first, create a callback that waits above.  however, it can only be for returning the value to the blocked consumer.  I still want the update of the setting to occur, in case the pendingintent is finally fired long after the process is gone.
+
+        Future f = new Future<String>() {
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                return false;
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return false;
+            }
+
+            @Override
+            public boolean isDone() {
+                return false;
+            }
+
+            @Override
+            public String get() throws InterruptedException, ExecutionException {
+                // this one is ill-advised.  print a warning?
+                return null;
+            }
+
+            @Override
+            public String get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+                return null;
+            }
+        };
     }
 }
