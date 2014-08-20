@@ -73,6 +73,29 @@ public class SessionManager {
         }
     }
 
+    private void writeSessionToFile(File path, Session session) {
+        Gson gson = new Gson();
+
+        FileWriter fw;
+        BufferedWriter writer = null;
+        try {
+            fw = new FileWriter(path);
+            writer = new BufferedWriter(fw);
+
+            gson.toJson(session, writer);
+
+            writer.close();
+            fw.close();
+
+            if(!path.exists()) {
+                throw new RuntimeException("Apparently failed at creating session file.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Problem writing a session to private storage", e);
+        }
+    }
+
+
     private Session newSession(Response response) {
         String authToken = createAuthToken();
 
@@ -81,25 +104,7 @@ public class SessionManager {
 
         // save session on disk
 
-        Gson gson = new Gson();
-
-        FileWriter fw;
-        BufferedWriter writer = null;
-        try {
-            fw = new FileWriter(sessionPath(authToken));
-            writer = new BufferedWriter(fw);
-
-            gson.toJson(session, writer);
-
-            writer.close();
-            fw.close();
-
-            if(!sessionPath(authToken).exists()) {
-                throw new RuntimeException("Apparently failed at creating session file.");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Problem writing a session to private storage", e);
-        }
+        writeSessionToFile(sessionPath(authToken), session);
 
         // TODO: black hat could spam the server and fill the private storage with sessions. simple rate limit may be easiest answer.  how does the java goopstack normally do it?
 
@@ -116,7 +121,7 @@ public class SessionManager {
         return new File(sessionsPath, authToken);
     }
 
-    private Session retrieveSession(String authToken) {
+    public Session retrieveSession(String authToken) {
         File sessionPath = sessionPath(authToken);
         if(sessionPath.exists()) {
             try {
@@ -133,6 +138,15 @@ public class SessionManager {
         } else {
             Log.d(LOG_TAG, "Session " + authToken + " does not exist.");
             return null;
+        }
+    }
+
+    public void saveSession(String authToken, Session session) {
+        File sessionPath = sessionPath(authToken);
+        if(sessionPath.exists()) {
+            writeSessionToFile(sessionPath, session);
+        } else {
+            Log.w(LOG_TAG, "Attempt to save a session that does not exist.  Ignoring.");
         }
     }
 
@@ -159,14 +173,19 @@ public class SessionManager {
     /** Throws exception if that Session is unauthorized.
      *
      * May block as it queries the user! */
-    public void authorize(Session session, String authority) throws UnauthorizedException {
+    public void authorize(String authToken, Session session, String authority) throws UnauthorizedException {
         // do nothing, thus authorizing everything for now
         if(session.disallowedAuthorites.contains(authority)) {
             throw new UnauthorizedException(authority);
         }
         if(!session.permittedAuthorities.contains(authority)) {
             // open the authorization activity, then wait for our AuthAnswerService to be told when.
-            AuthAnswerService.putUpNotification(mContext, authority);
+            AuthAnswerService.putUpNotification(mContext, authToken, authority, new FutureValue<String>() {
+                @Override
+                public void call(String value) {
+                    // got our answer!
+                }
+            });
 
             // now block.  however, while we do want to consume the answer here, the thing that sets the answer in the session needs to be somewhere else: I want to the request to timeout, but I want the setting to get changed even if the user clicks the notification hours after the fact.
 
