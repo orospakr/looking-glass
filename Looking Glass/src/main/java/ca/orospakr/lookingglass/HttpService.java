@@ -64,7 +64,7 @@ public class HttpService extends Service {
     protected void authorize(String authority, Request request, Response response) throws SessionManager.UnauthorizedException{
         SessionManager.Session session = mSessionManager.get(request, response);
 
-        mSessionManager.authorize(session, authority);
+        mSessionManager.authorize("", session, authority);
     }
 
     private static abstract class CursorTransformerRoute extends ResponseTransformerRoute {
