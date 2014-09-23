@@ -12,12 +12,8 @@ import android.util.Log;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.RunnableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -69,7 +65,7 @@ public class AuthAnswerService extends Service {
         if(answer.equals("allow")) {
             session.permittedAuthorities.add(authority);
         } else {
-            session.disallowedAuthorites.add(authority);
+            session.disallowedAuthorities.add(authority);
         }
         // block!
         // remove the notification
@@ -102,7 +98,6 @@ public class AuthAnswerService extends Service {
         denyExtras.putString(FIELD_ANSWER, "deny");
         denyExtras.putString(FIELD_SESSION, authToken);
         denyIntent.putExtras(denyExtras);
-
 
         Intent allowIntent = new Intent();
         allowIntent.setClass(context, AuthAnswerService.class);
@@ -137,9 +132,7 @@ public class AuthAnswerService extends Service {
             }
         };
 
-
-
-        answerBlockLock.notifyAll();
+        // answerBlockLock.notifyAll();
         return f;
     }
 }

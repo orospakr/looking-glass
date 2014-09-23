@@ -1,17 +1,12 @@
 package ca.orospakr.lookingglass;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,12 +17,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import dagger.Module;
 import spark.Request;
 import spark.Response;
 
@@ -60,7 +53,7 @@ public class SessionManager {
         ArrayList<String> permittedAuthorities = new ArrayList<String>();
 
         /** Content providers the device's owner has explicitly disallowed this session from accessing. */
-        ArrayList<String> disallowedAuthorites = new ArrayList<String>();
+        ArrayList<String> disallowedAuthorities = new ArrayList<String>();
     }
 
     protected String createAuthToken() {
@@ -170,12 +163,15 @@ public class SessionManager {
         }
     }
 
-    /** Throws exception if that Session is unauthorized.
+    /** Determines if the given session has been granted access to the given content provider authority.  May delay to ask the user for permission if not yet asked.
      *
-     * May block as it queries the user! */
+     * May block if it has to query the user! */
     public void authorize(String authToken, Session session, String authority) throws UnauthorizedException {
+
+        // TODO: if there is an auth request already up then we want to wait for it just like the outstanding request is.
+
         // do nothing, thus authorizing everything for now
-        if(session.disallowedAuthorites.contains(authority)) {
+        if(session.disallowedAuthorities.contains(authority)) {
             throw new UnauthorizedException(authority);
         }
         if(!session.permittedAuthorities.contains(authority)) {
@@ -183,7 +179,10 @@ public class SessionManager {
             AuthAnswerService.putUpNotification(mContext, authToken, authority, new FutureValue<String>() {
                 @Override
                 public void call(String value) {
+                    Log.i(LOG_TAG, "User gave answer: " + value);
                     // got our answer!
+
+                    // TODO: record that this session has been granted or denied permanently.
                 }
             });
 

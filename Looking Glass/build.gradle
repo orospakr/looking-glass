@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    // Spark 2.0 is not Android compatible -- it uses Java 8 features (if only...)
     compile 'com.sparkjava:spark-core:1.1.1'
     compile 'com.google.code.gson:gson:2.2.4'
 

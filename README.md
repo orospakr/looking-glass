@@ -21,7 +21,7 @@ dependencies (Jetty) require Java 7 stuff, which only dropped in 4.4.
 
 ### License
 
-Copyright (C) 2013 Andrew Clunis <andrew@orospakr.ca>
+Copyright (C) 2013-2014 Andrew Clunis <andrew@orospakr.ca>
 
 Licensed under the Apache License, Version 2.0 (the "License"); you
 may not use this file except in compliance with the License.  The

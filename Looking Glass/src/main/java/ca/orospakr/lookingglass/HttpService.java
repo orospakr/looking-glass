@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 
 import org.eclipse.jetty.server.SessionIdManager;
@@ -167,7 +168,7 @@ public class HttpService extends Service {
 
         ((LookingGlassApp) getApplication()).inject(this);
 
-        Log.i(LOG_TAG, "STATING UP HTTP SERVER, session manager is " + mSessionManager);
+        Log.i(LOG_TAG, "STARTING UP HTTP SERVER, session manager is " + mSessionManager);
 
         // mSessionManager = new SessionManager(this);
 
@@ -187,6 +188,7 @@ public class HttpService extends Service {
             public Object handle(Request request, Response response) {
                 logRequest(request);
 
+
                 return executeWithErrorHandling(response, new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
@@ -204,7 +206,7 @@ public class HttpService extends Service {
                             }
                         }
 
-                        Gson gson = new Gson();
+                        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
                         return gson.toJson(installedProviders);
                     }
@@ -316,18 +318,22 @@ public class HttpService extends Service {
 
                 final String authority = request.params(":authority");
 
-
-
                 return executeWithErrorHandling(response, new Callable<Object>() {
                     @Override
                     public Object call() throws Exception {
+
+                        // the total path of the event here, is like:
+
+                        // jetty -> spark -> httpservice -> binder -> android notification -> human -> authanswerservice -> binder -> blocked bit of code in httpservice
+
+                        // i can rely on my two services being in the same process, so I can achieve my blocking behaviour naiively with some sort of locky thing.
 
                         authorize(authority, request, response);
                         // time to whip myself up a contentresolver
 
                         // TODO: listen on v6 if available
 
-                        // TODO: thread safety concerns?  what's spark's concurrency model?
+                        // TODO: thread safety concerns?  what's spark's concurrency model?  It's Jetty's.
 
                         // TODO: build Uri properly
 
@@ -344,8 +350,6 @@ public class HttpService extends Service {
 
                     }
                 });
-
-
             }
         });
     }

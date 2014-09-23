@@ -34,17 +34,25 @@
 
     <!--
          Content Provider permissions.  Because they can only be asked for here, I expect a lot of
-         pull requests here. ;)
+         pull requests. ;).
+
+         Run a build of Looking Glass, and run:
+
+         curl http://localhost:4567/util/needed_permissions
+
+         to gather all of the possible permissions on your phone in order to get a snippet of XML
+         to replace the below with.  Be sure not to delete any existing ones.
     -->
 
-    <uses-permission android:name="com.qo.android.permission.READ_FILE_CONTENT" />
+    <uses-permission android:name="com.android.email.permission.ACCESS_PROVIDER" />
+    <uses-permission android:name="com.amazon.mas.client.malware.blockedapp.BLOCKED_APP_PROVIDER_WRITE-com.amazon.mShop.android" />
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
-    <uses-permission android:name="evernote.permission.READ_DATA" />
+    <uses-permission android:name="android.permission.WRITE_THEMES" />
     <uses-permission android:name="com.aol.mobile.aim.permission.READ_WRITE_BUDDY_LIST_DATA" />
     <uses-permission android:name="com.google.android.providers.talk.permission.READ_ONLY" />
+    <uses-permission android:name="org.mozilla.firefox_beta.permissions.BROWSER_PROVIDER" />
     <uses-permission android:name="com.android.launcher3.permission.READ_SETTINGS" />
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.adobe.reader.provider.permission.WRITE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
@@ -56,19 +64,24 @@
     <uses-permission android:name="com.google.android.gm.permission.WRITE_GMAIL" />
     <uses-permission android:name="com.google.android.marvin.talkback.permission.LABELING" />
     <uses-permission android:name="com.google.android.apps.plus.permission.PICASA_STORE" />
+    <uses-permission android:name="com.google.android.launcher.permission.CONTENT_REDIRECT" />
     <uses-permission android:name="com.android.browser.permission.WRITE_HISTORY_BOOKMARKS" />
     <uses-permission android:name="com.twitter.android.permission.READ_DATA" />
     <uses-permission android:name="android.permission.SUBSCRIBED_FEEDS_READ" />
+    <uses-permission android:name="com.amazon.identity.permission.CAN_CALL_MAP_INFORMATION_PROVIDER" />
+    <uses-permission android:name="android.permission.CHANGE_PHONE_BLACKLIST" />
     <uses-permission android:name="com.google.android.ears.permission.READ" />
-    <uses-permission android:name="com.google.android.email.permission.READ_ATTACHMENT" />
+    <uses-permission android:name="com.joistapp.android.joist.permission.UA_DATA" />
     <uses-permission android:name="com.android.voicemail.permission.ADD_VOICEMAIL" />
     <uses-permission android:name="android.permission.BIND_DIRECTORY_SEARCH" />
     <uses-permission android:name="com.todoroo.astrid.WRITE" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
     <uses-permission android:name="android.permission.ACCESS_BLUETOOTH_SHARE" />
     <uses-permission android:name="com.android.gallery3d.filtershow.permission.WRITE" />
     <uses-permission android:name="com.google.android.providers.talk.permission.WRITE_ONLY" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="com.facebook.katana.provider.ACCESS" />
     <uses-permission android:name="com.twitter.android.permission.RESTRICTED" />
     <uses-permission android:name="org.mozilla.firefox.permissions.FORMHISTORY_PROVIDER" />
     <uses-permission android:name="com.android.launcher3.permission.WRITE_SETTINGS" />
@@ -76,7 +89,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.gm.permission.READ_GMAIL" />
     <uses-permission android:name="com.google.android.gallery3d.permission.GALLERY_PROVIDER" />
-    <uses-permission android:name="com.google.android.email.permission.ACCESS_PROVIDER" />
+    <uses-permission android:name="com.cyanogenmod.lockclock.permission.READ_WEATHER" />
+    <uses-permission android:name="android.permission.READ_PHONE_BLACKLIST" />
+    <uses-permission android:name="org.mozilla.firefox_beta.permissions.PASSWORD_PROVIDER" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.timsu.astrid.permission.READ_TASKS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -85,25 +100,37 @@
     <uses-permission android:name="com.google.android.xdi.permission.ACCESS_APP_BROWSE_DATA" />
     <uses-permission android:name="com.todoroo.astrid.READ" />
     <uses-permission android:name="org.mozilla.firefox.permissions.HEALTH_PROVIDER" />
+    <uses-permission android:name="com.qo.android.permission.WRITE_GO_KART_DOCUMENT" />
     <uses-permission android:name="org.mozilla.firefox.permissions.PASSWORD_PROVIDER" />
+    <uses-permission android:name="android.permission.GLOBAL_SEARCH" />
     <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="com.amazon.mas.client.CONTENT_PROVIDER_READ-com.amazon.venezia" />
+    <uses-permission android:name="info.guardianproject.gpg.permission.READ_KEY_DETAILS" />
     <uses-permission android:name="android.permission.ACCESS_ALL_DOWNLOADS" />
     <uses-permission android:name="com.google.android.gm.permission.READ_CONTENT_PROVIDER" />
+    <uses-permission android:name="android.permission.READ_THEMES" />
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
     <uses-permission android:name="com.google.android.providers.settings.permission.WRITE_GSETTINGS" />
     <uses-permission android:name="com.amazon.CONTENT_PROVIDER_ACCESS" />
-    <uses-permission android:name="evernote.permission.WRITE_DATA" />
+    <uses-permission android:name="com.foursquare.permission.ACCOUNTS" />
+    <uses-permission android:name="org.mozilla.firefox_beta.permissions.HEALTH_PROVIDER" />
     <uses-permission android:name="com.google.android.voicesearch.AUDIO_FILE_ACCESS" />
+    <uses-permission android:name="com.amazon.mas.client.download.CONTENT_PROVIDER_WRITE-com.amazon.mShop.android" />
+    <uses-permission android:name="com.amazon.mas.client.CONTENT_PROVIDER_READ-com.amazon.mShop.android" />
+    <uses-permission android:name="com.amazon.mas.client.install.CONTENT_PROVIDER_WRITE-com.amazon.mShop.android" />
     <uses-permission android:name="com.google.android.partnersetup.permission.ACCESS_PROVIDER" />
     <uses-permission android:name="com.android.gallery3d.filtershow.permission.READ" />
     <uses-permission android:name="com.google.android.apps.photos.permission.GOOGLE_PHOTOS" />
+    <uses-permission android:name="com.android.email.permission.READ_ATTACHMENT" />
     <uses-permission android:name="com.facebook.orca.provider.ACCESS" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
+    <uses-permission android:name="com.android.deskclock.worldclock.permissions.WRITE_DATABASE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="com.facebook.permission.prod.FB_APP_COMMUNICATION" />
     <uses-permission android:name="com.google.android.gallery3d.permission.PICASA_STORE" />
     <uses-permission android:name="android.permission.SUBSCRIBED_FEEDS_WRITE" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
-    <uses-permission android:name="android.permission.READ_CELL_BROADCASTS" />
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
-
+    <uses-permission android:name="android.permission.READ_CELL_BROADCASTS" />
+    <uses-permission android:name="org.mozilla.firefox_beta.permissions.FORMHISTORY_PROVIDER" />
 </manifest>
